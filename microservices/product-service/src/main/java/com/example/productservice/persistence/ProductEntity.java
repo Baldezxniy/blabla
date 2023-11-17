@@ -1,38 +1,48 @@
 package com.example.productservice.persistence;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 
-@Document(collection = "products")
+@Entity
+@Table(name = "products")
 public class ProductEntity {
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Version
-  private Integer version;
+  private int version;
 
-  @Indexed(unique = true)
+  @Column(name = "product_id", unique = true)
+  @Nullable
   private int productId;
 
   private String name;
   private int weight;
 
+  public ProductEntity() {
+  }
 
-  public String getId() {
+  public ProductEntity(int productId, String name, int weight) {
+    this.productId = productId;
+    this.name = name;
+    this.weight = weight;
+  }
+
+  public Long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(long id) {
     this.id = id;
   }
 
-  public Integer getVersion() {
+
+  public int getVersion() {
     return version;
   }
 
-  public void setVersion(Integer version) {
+  public void setVersion(int version) {
     this.version = version;
   }
 

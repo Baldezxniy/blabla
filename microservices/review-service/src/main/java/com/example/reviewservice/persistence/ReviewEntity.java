@@ -3,7 +3,7 @@ package com.example.reviewservice.persistence;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "reviews", indexes = {@Index(name = "reviews_unique_idx", unique = true, columnList = "productId,reviewId")})
+@Table(name = "reviews", indexes = {@Index(name = "idx_reviews_product_id_review_id", unique = true, columnList = "product_id, review_id")})
 public class ReviewEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,8 +11,10 @@ public class ReviewEntity {
 
   @Version
   private int version;
-
+  @Column(name = "product_id")
   private int productId;
+
+  @Column(name = "review_id")
   private int reviewId;
   private String author;
   private String subject;

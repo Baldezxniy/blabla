@@ -1,19 +1,23 @@
 package com.example.recommendationservice.persistence;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
-@Document(collection = "recommendations")
-@CompoundIndex(name = "prod-rec-id", unique = true, def = "{'productId': 1, 'recommendationId' : 1}")
+@Entity
+@Table(name = "recommendations", indexes = {
+        @Index(name = "idx_recommendation_product_id_recommendation_id", columnList = "product_id,recommendation_id", unique = true)
+})
 public class RecommendationEntity {
 
-  @Id private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-  @Version private Integer version;
+  @Version
+  private int version;
 
+  @Column(name = "product_id")
   private int productId;
+  @Column(name = "recommendation_id")
   private int recommendationId;
   private String author;
   private int rating;
@@ -30,7 +34,7 @@ public class RecommendationEntity {
     this.content = content;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
@@ -58,7 +62,7 @@ public class RecommendationEntity {
     return content;
   }
 
-  public void setId(String id) {
+  public void setId(long id) {
     this.id = id;
   }
 

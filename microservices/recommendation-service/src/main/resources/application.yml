@@ -10,6 +10,13 @@ logging:
     root: INFO
     com.example: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/recommendation-db"
+    username: "postgres"
+    password: "password"
 ---
 spring.config.activate.on-profile: docker
 

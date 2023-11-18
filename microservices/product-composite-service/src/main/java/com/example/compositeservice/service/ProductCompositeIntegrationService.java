@@ -63,6 +63,11 @@ public class ProductCompositeIntegrationService implements ProductService, Recom
   }
 
   @Override
+  public Product createProduct(Product body) {
+    return null;
+  }
+
+  @Override
   public Product getProduct(int productId) {
     try {
       String url = productServiceUrl + productId;
@@ -88,12 +93,22 @@ public class ProductCompositeIntegrationService implements ProductService, Recom
     }
   }
 
+  @Override
+  public void deleteProduct(int productId) {
+
+  }
+
   private String getErrorMessage(HttpClientErrorException ex) {
     try {
       return objectMapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
     } catch (IOException ioEx) {
       return ex.getMessage();
     }
+  }
+
+  @Override
+  public Recommendation createRecommendation(Recommendation body) {
+    return null;
   }
 
   @Override
@@ -117,6 +132,16 @@ public class ProductCompositeIntegrationService implements ProductService, Recom
   }
 
   @Override
+  public void deleteRecommendation(int productId) {
+
+  }
+
+  @Override
+  public Review createReview(Review body) {
+    return null;
+  }
+
+  @Override
   public List<Review> getReviews(int productId) {
     try {
       String url = reviewServiceUrl + productId;
@@ -133,6 +158,27 @@ public class ProductCompositeIntegrationService implements ProductService, Recom
     } catch (Exception ex) {
       LOG.warn("Got an exception while requesting reviews, return zero reviews: {}", ex.getMessage());
       return new ArrayList<>();
+    }
+  }
+
+  @Override
+  public void deleteReview(int productId) {
+
+  }
+
+  private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
+    switch (Objects.requireNonNull(HttpStatus.resolve(ex.getStatusCode().value()))) {
+
+      case NOT_FOUND:
+        return new NotFoundException(getErrorMessage(ex));
+
+      case UNPROCESSABLE_ENTITY:
+        return new InvalidInputException(getErrorMessage(ex));
+
+      default:
+        LOG.warn("Got an unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
+        LOG.warn("Error body: {}", ex.getResponseBodyAsString());
+        return ex;
     }
   }
 }

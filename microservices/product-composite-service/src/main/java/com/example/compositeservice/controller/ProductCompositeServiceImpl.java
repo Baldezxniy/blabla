@@ -7,6 +7,7 @@ import com.example.api.core.review.Review;
 import com.example.compositeservice.service.ProductCompositeIntegrationService;
 import com.example.util.http.ServiceUtil;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,11 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     this.integration = integration;
   }
 
+  @Override
+  public void createProduct(ProductAggregate body) {
+
+  }
+
   /**
    * @param productId @PathVariable("productId")
    * @GetMapping "/{productId}"
@@ -40,6 +46,11 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     return createProductAggregate(product, recommendations,
             reviews, serviceUtil.getServiceAddress());
+  }
+
+  @Override
+  public void deleteProduct(int productId) {
+
   }
 
   private ProductAggregate createProductAggregate(

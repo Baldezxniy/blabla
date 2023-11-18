@@ -19,7 +19,7 @@ public interface ProductCompositeService {
           @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
           @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")
   })
-  @PostMapping("/product-composite")
+  @PostMapping(value = "/", consumes = "application/json")
   void createProduct(@RequestBody ProductAggregate body);
 
   @Operation(
@@ -46,6 +46,7 @@ public interface ProductCompositeService {
           @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
           @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")
   })
-  @DeleteMapping(value = "/product-composite/{productId}")
-  void deleteProduct(@PathVariable int productId);
+
+  @DeleteMapping(value = "/{productId}")
+  void deleteProduct(@PathVariable("productId") int productId);
 }

@@ -9,6 +9,7 @@ import com.example.recommendationservice.util.RecommendationMapper;
 import com.example.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class RecommendationServiceImpl implements RecommendationService {
   private final RecommendationMapper mapper;
   private final ServiceUtil serviceUtil;
 
-  public RecommendationServiceImpl(RecommendationRepository repository, RecommendationMapper mapper, ServiceUtil serviceUtil) {
+  public RecommendationServiceImpl(RecommendationRepository repository, @Qualifier("recommendationMapperImpl") RecommendationMapper mapper, ServiceUtil serviceUtil) {
     this.repository = repository;
     this.mapper = mapper;
     this.serviceUtil = serviceUtil;
@@ -39,7 +40,7 @@ public class RecommendationServiceImpl implements RecommendationService {
       return mapper.entityToApi(newEntity);
 
     } catch (DataIntegrityViolationException dive) {
-      throw new InvalidInputException("Duplicate key, Product Id: " + body.getProductId());
+      throw new InvalidInputException("Duplicate key, Product Id: " + body.getProductId() + ", Recommendation Id:" + body.getRecommendationId());
     }
   }
 

@@ -1,9 +1,9 @@
 server.port: 7001
 server.error.include-message: always
 
-spring.jpa.hibernate.ddl-auto: create
+spring.jpa.hibernate.ddl-auto: update
 
-spring.datasource.hikari.initializationFailTimeout: 60000
+#spring.datasource.hikari.initializationFailTimeout: 60000
 logging:
   level:
     root: INFO
@@ -15,7 +15,15 @@ spring:
     url: "jdbc:postgresql://localhost:5432/product-db"
     username: "postgres"
     password: "password"
+    hikari.initializationFailTimeout: 60000
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 ---
 spring.config.activate.on-profile: docker
 
 server.port: 8080
+
+spring.datasource:
+#  url: jdbc:postgresql://postgres-product-db:15432/product-db
+  url: jdbc:postgresql://postgres-product-db/product-db
+#  url: jdbc:postgresql://localhost:15432/product-db

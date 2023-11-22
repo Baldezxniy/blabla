@@ -4,7 +4,7 @@ server.error.include-message: always
 # Strongly recommend to set this property to "none" in a production environment!
 spring.jpa.hibernate.ddl-auto: update
 
-spring.datasource.hikari.initializationFailTimeout: 60000
+#spring.datasource.hikari.initializationFailTimeout: 60000
 
 logging:
   level:
@@ -17,10 +17,14 @@ spring:
     url: "jdbc:postgresql://localhost:5432/review-db"
     username: "postgres"
     password: "password"
+    hikari.initializationFailTimeout: 60000
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 ---
 spring.config.activate.on-profile: docker
 
 server.port: 8080
 
 spring.datasource:
-  url: jdbc:mysql://mysql/review-db
+#  url: jdbc:postgresql://postgres-review-db:5434/review-db
+  url: jdbc:postgresql://postgres-review-db/review-db

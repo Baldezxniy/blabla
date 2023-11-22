@@ -3,21 +3,26 @@ server.error.include-message: always
 
 spring.jpa.hibernate.ddl-auto: update
 
-spring.datasource.hikari.initializationFailTimeout: 60000
-
+#spring.datasource.hikari.initializationFailTimeout: 60000
 logging:
   level:
     root: INFO
     com.example: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
-
 spring:
   datasource:
     url: "jdbc:postgresql://localhost:5432/recommendation-db"
     username: "postgres"
     password: "password"
+    hikari.initializationFailTimeout: 60000
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 ---
 spring.config.activate.on-profile: docker
 
 server.port: 8080
+
+spring.datasource:
+#  url: jdbc:postgresql://postgres-recommendation-db:5433/recommendation-db
+  url: jdbc:postgresql://postgres-recommendation-db/recommendation-db

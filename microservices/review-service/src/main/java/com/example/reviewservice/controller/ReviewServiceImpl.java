@@ -9,6 +9,7 @@ import com.example.reviewservice.util.ReviewMapper;
 import com.example.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class ReviewServiceImpl implements ReviewService {
   private final ReviewMapper mapper;
   private final ServiceUtil serviceUtil;
 
-  public ReviewServiceImpl(ReviewRepository repository, ReviewMapper mapper, ServiceUtil serviceUtil) {
+  public ReviewServiceImpl(ReviewRepository repository, @Qualifier("reviewMapperImpl") ReviewMapper mapper, ServiceUtil serviceUtil) {
     this.repository = repository;
     this.mapper = mapper;
     this.serviceUtil = serviceUtil;

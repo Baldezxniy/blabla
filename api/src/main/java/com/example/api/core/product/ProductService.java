@@ -15,7 +15,7 @@ public interface ProductService {
    * @param body A JSON representation of the new product
    * @return A JSON representation of the newly created product
    */
-  @PostMapping(value = "/", produces = "application/json", consumes = "application/json")
+  @PostMapping(produces = "application/json", consumes = "application/json")
   Product createProduct(@RequestBody Product body);
 
   /**

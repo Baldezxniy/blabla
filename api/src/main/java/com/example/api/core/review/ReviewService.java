@@ -16,7 +16,7 @@ public interface ReviewService {
    * @param body A JSON representation of the new review
    * @return A JSON representation of the newly created review
    */
-  @PostMapping(value = "/", produces = "application/json", consumes = "application/json")
+  @PostMapping(produces = "application/json", consumes = "application/json")
   Review createReview(@RequestBody Review body);
 
   /**
@@ -25,7 +25,7 @@ public interface ReviewService {
    * @param productId Id of the product
    * @return the reviews  of the product
    */
-  @GetMapping(value = "/", produces = "application/json")
+  @GetMapping(produces = "application/json")
   List<Review> getReviews(@RequestParam(value = "productId", required = true) int productId);
 
   /**
@@ -33,7 +33,7 @@ public interface ReviewService {
    *
    * @param productId Id of the product
    */
-  @DeleteMapping("/")
+  @DeleteMapping
   void deleteReview(@RequestParam(value = "productId", required = true) int productId);
 
 }

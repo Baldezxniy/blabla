@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @DataJpaTest
 @Transactional(propagation = NOT_SUPPORTED)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class PersistenceTests extends MySqlTestBase {
+class PersistenceTests extends PostgreSQLTestBase {
 
   @Autowired
   private ReviewRepository repository;

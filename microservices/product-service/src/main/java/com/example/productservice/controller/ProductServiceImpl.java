@@ -11,12 +11,10 @@ import com.example.productservice.util.ProductMapperImpl;
 import com.example.util.http.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @RequectMapping "/v1/product"
- */
 @RestController
 public class ProductServiceImpl implements ProductService {
 
@@ -27,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
   private final ProductRepository repository;
 
 
-  public ProductServiceImpl(ServiceUtil serviceUtil, ProductMapperImpl mapper, ProductRepository repository) {
+  public ProductServiceImpl(ServiceUtil serviceUtil, @Qualifier("productMapperImpl") ProductMapper mapper, ProductRepository repository) {
     this.serviceUtil = serviceUtil;
     this.mapper = mapper;
     this.repository = repository;

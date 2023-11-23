@@ -3,7 +3,6 @@ server.error.include-message: always
 
 spring.jpa.hibernate.ddl-auto: none
 
-#spring.datasource.hikari.initializationFailTimeout: 60000
 logging:
   level:
     root: INFO
@@ -26,6 +25,4 @@ spring.config.activate.on-profile: docker
 server.port: 8080
 
 spring.datasource:
-#  url: jdbc:postgresql://postgres-product-db:15432/product-db
   url: jdbc:postgresql://postgres-product-db/product-db
-#  url: jdbc:postgresql://localhost:15432/product-db

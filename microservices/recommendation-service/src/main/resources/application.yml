@@ -1,9 +1,8 @@
 server.port: 7002
 server.error.include-message: always
 
-spring.jpa.hibernate.ddl-auto: update
+spring.jpa.hibernate.ddl-auto: none
 
-#spring.datasource.hikari.initializationFailTimeout: 60000
 logging:
   level:
     root: INFO
@@ -11,6 +10,8 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 spring:
+  liquibase:
+    enabled: true
   datasource:
     url: "jdbc:postgresql://localhost:5432/recommendation-db"
     username: "postgres"
@@ -24,5 +25,4 @@ spring.config.activate.on-profile: docker
 server.port: 8080
 
 spring.datasource:
-#  url: jdbc:postgresql://postgres-recommendation-db:5433/recommendation-db
   url: jdbc:postgresql://postgres-recommendation-db/recommendation-db

@@ -1,7 +1,7 @@
 server.port: 7001
 server.error.include-message: always
 
-spring.jpa.hibernate.ddl-auto: update
+spring.jpa.hibernate.ddl-auto: none
 
 #spring.datasource.hikari.initializationFailTimeout: 60000
 logging:
@@ -11,6 +11,8 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 spring:
+  liquibase:
+    enabled: true
   datasource:
     url: "jdbc:postgresql://localhost:5432/product-db"
     username: "postgres"

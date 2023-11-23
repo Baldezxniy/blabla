@@ -2,9 +2,7 @@ server.port: 7003
 server.error.include-message: always
 
 # Strongly recommend to set this property to "none" in a production environment!
-spring.jpa.hibernate.ddl-auto: update
-
-#spring.datasource.hikari.initializationFailTimeout: 60000
+spring.jpa.hibernate.ddl-auto: none
 
 logging:
   level:
@@ -13,6 +11,8 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 spring:
+  liquibase:
+    enabled: true
   datasource:
     url: "jdbc:postgresql://localhost:5432/review-db"
     username: "postgres"
@@ -26,5 +26,4 @@ spring.config.activate.on-profile: docker
 server.port: 8080
 
 spring.datasource:
-#  url: jdbc:postgresql://postgres-review-db:5434/review-db
   url: jdbc:postgresql://postgres-review-db/review-db

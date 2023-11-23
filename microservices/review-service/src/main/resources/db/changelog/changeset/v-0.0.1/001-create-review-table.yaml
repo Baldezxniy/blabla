@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-review-table
+      author: Miroslav Kosiuk <mirolavkosiuk@gmail.com>
+      changes:
+        - createTable:
+            tableName: reviews
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: review_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subject
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: varchar(250)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_reviews_product_id_review_id
+            tableName: reviews
+            unique: true
+            columns:
+              - column:
+                  name: product_id
+              - column:
+                  name: review_id

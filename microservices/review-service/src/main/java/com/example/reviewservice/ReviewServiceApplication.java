@@ -21,5 +21,4 @@ public class ReviewServiceApplication {
     String postgresHost = ctx.getEnvironment().getProperty("spring.datasource.url");
     LOG.info("Connected to PostgreSQL: " + postgresHost);
   }
-
 }

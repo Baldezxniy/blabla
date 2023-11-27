@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.IntStream.rangeClosed;
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,7 +106,7 @@ public class PersistenceTests extends PostgreSQLTestBase {
       repository.save(entity2);
     });
 
-    // Get the updated entity from the database and verify its new sate
+    // Get the updated entity from the database and verify its new state
     ProductEntity updatedEntity = repository.findById(savedEntity.getId()).get();
     assertEquals(1, (int) updatedEntity.getVersion());
     assertEquals("n1", updatedEntity.getName());
@@ -118,10 +120,13 @@ public class PersistenceTests extends PostgreSQLTestBase {
     List<ProductEntity> newProducts = rangeClosed(1001, 1010).mapToObj(i -> new ProductEntity(i, "name " + i, i)).collect(Collectors.toList());
     repository.saveAll(newProducts);
 
-    Pageable nextPage = PageRequest.of(0, 4, ASC, "productId");
-    nextPage = testNextPage(nextPage, "[1001, 1002, 1003, 1004]", true);
-    nextPage = testNextPage(nextPage, "[1005, 1006, 1007, 1008]", true);
-    nextPage = testNextPage(nextPage, "[1009, 1010]", false);
+    Pageable nextPage = PageRequest.of(0, 3, ASC, "productId");
+
+    nextPage = testNextPage(nextPage, "[1001, 1002, 1003],", true);
+    nextPage = testNextPage(nextPage, "[1004, 1005, 1006],", true);
+    nextPage = testNextPage(nextPage, "[1007, 1008, 1009],", true);
+    nextPage = testNextPage(nextPage, "[1010]", false);
+
   }
 
   private Pageable testNextPage(Pageable nextPage, String expectedProductIds, boolean expectsNextPage) {

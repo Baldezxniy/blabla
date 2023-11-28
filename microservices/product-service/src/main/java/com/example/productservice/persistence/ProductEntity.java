@@ -1,19 +1,18 @@
 package com.example.productservice.persistence;
 
 import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
 @Table(name = "products")
 public class ProductEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Version
+  @Version()
   private int version;
-
-  @Column(name = "product_id", unique = true)
+  @Column("product_id")
   @Nullable
   private int productId;
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,7 +29,7 @@ class ProductServiceApplicationTests extends PostgreSQLTestBase {
 
   @BeforeEach
   void setupDb() {
-    repository.deleteAll();
+    StepVerifier.create(repository.deleteAll()).verifyComplete();
   }
 
   @Test
@@ -38,7 +39,7 @@ class ProductServiceApplicationTests extends PostgreSQLTestBase {
 
     postAndVerifyProduct(productId, OK);
 
-    assertTrue(repository.findByProductId(productId).isPresent());
+    assertTrue(repository.findByProductId(productId).block() != null); //.isPresent());
 
     getAndVerifyProduct(productId, OK).jsonPath("$.productId").isEqualTo(productId);
   }
@@ -50,7 +51,7 @@ class ProductServiceApplicationTests extends PostgreSQLTestBase {
 
     postAndVerifyProduct(productId, OK);
 
-    assertTrue(repository.findByProductId(productId).isPresent());
+    assertTrue(repository.findByProductId(productId).block() != null);//.isPresent());
 
     postAndVerifyProduct(productId, UNPROCESSABLE_ENTITY)
             .jsonPath("$.path").isEqualTo("/v1/product")
@@ -63,10 +64,10 @@ class ProductServiceApplicationTests extends PostgreSQLTestBase {
     int productId = 1;
 
     postAndVerifyProduct(productId, OK);
-    assertTrue(repository.findByProductId(productId).isPresent());
+    assertTrue(repository.findByProductId(productId).block() != null);//.isPresent());
 
     deleteAndVerifyProduct(productId, OK);
-    assertFalse(repository.findByProductId(productId).isPresent());
+    assertFalse(repository.findByProductId(productId).block() != null);//.isPresent());
 
     deleteAndVerifyProduct(productId, OK);
   }

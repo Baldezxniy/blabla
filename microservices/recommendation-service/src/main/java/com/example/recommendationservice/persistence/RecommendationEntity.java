@@ -1,23 +1,24 @@
 package com.example.recommendationservice.persistence;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
-@Table(name = "recommendations", indexes = {
-        @Index(name = "idx_recommendation_product_id_recommendation_id", columnList = "product_id,recommendation_id", unique = true)
-})
+//@Entity
+@Table(name = "recommendations")  //, indexes = {@Index(name = "idx_recommendation_product_id_recommendation_id", columnList = "product_id,recommendation_id", unique = true)}
 public class RecommendationEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+//  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   @Version
   private int version;
 
-  @Column(name = "product_id")
+  @Column("product_id")
   private int productId;
-  @Column(name = "recommendation_id")
+  @Column("recommendation_id")
   private int recommendationId;
   private String author;
   private int rating;

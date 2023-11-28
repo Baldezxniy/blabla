@@ -26,7 +26,7 @@ class RecommendationServiceApplicationTests extends PostgreSQLTestBase {
 
   @BeforeEach
   void setupDb() {
-    repository.deleteAll();
+    repository.deleteAll().block();
   }
 
   @Test
@@ -38,7 +38,7 @@ class RecommendationServiceApplicationTests extends PostgreSQLTestBase {
     postAndVerifyRecommendation(productId, 2, OK);
     postAndVerifyRecommendation(productId, 3, OK);
 
-    assertEquals(3, repository.findAllByProductId(productId).size());
+    assertEquals(3, repository.findAllByProductId(productId).count().block());
 
     getAndVerifyRecommendationsByProductId(productId, OK)
             .jsonPath("$.length()").isEqualTo(3)
@@ -56,13 +56,13 @@ class RecommendationServiceApplicationTests extends PostgreSQLTestBase {
             .jsonPath("$.productId").isEqualTo(productId)
             .jsonPath("$.recommendationId").isEqualTo(recommendationId);
 
-    assertEquals(1, repository.count());
+    assertEquals(1, repository.count().block());
 
     postAndVerifyRecommendation(productId, recommendationId, UNPROCESSABLE_ENTITY)
             .jsonPath("$.path").isEqualTo("/v1/recommendation")
             .jsonPath("$.message").isEqualTo("Duplicate key, Product Id: 1, Recommendation Id:1");
 
-    assertEquals(1, repository.count());
+    assertEquals(1, repository.count().block());
   }
 
   @Test
@@ -72,10 +72,10 @@ class RecommendationServiceApplicationTests extends PostgreSQLTestBase {
     int recommendationId = 1;
 
     postAndVerifyRecommendation(productId, recommendationId, OK);
-    assertEquals(1, repository.findAllByProductId(productId).size());
+    assertEquals(1, repository.findAllByProductId(productId).count().block());
 
     deleteAndVerifyRecommendationsByProductId(productId, OK);
-    assertEquals(0, repository.findAllByProductId(productId).size());
+    assertEquals(0, repository.findAllByProductId(productId).count().block());
 
     deleteAndVerifyRecommendationsByProductId(productId, OK);
   }

@@ -12,11 +12,16 @@ logging:
 spring:
   liquibase:
     enabled: true
-  datasource:
-    url: "jdbc:postgresql://localhost:5432/recommendation-db"
-    username: "postgres"
-    password: "password"
-    hikari.initializationFailTimeout: 60000
+    url: jdbc:postgresql://localhost:5432/recommendation-db
+    password: password
+    user: postgres
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/recommendation-db
+    username: postgres
+    password: password
+    pool:
+      max-create-connection-time: 60000
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 ---

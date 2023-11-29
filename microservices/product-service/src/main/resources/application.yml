@@ -25,6 +25,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+# Spring Cloud SetUp
+spring.cloud.function.definition: messageProcessor
+
 spring.cloud.stream:
   defaultBinder: rabbit
   default.contentType: application/json

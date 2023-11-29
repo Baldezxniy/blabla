@@ -9,13 +9,10 @@ logging:
     com.example: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
-
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     url: jdbc:postgresql://localhost:5432/product-db
-    #  datasource:
-    #    url: "jdbc:postgresql://localhost:5432/product-db"
     user: "postgres"
     password: "password"
   r2dbc:
@@ -27,8 +24,45 @@ spring:
       max-create-connection-time: 60000
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+spring.cloud.stream:
+  defaultBinder: rabbit
+  default.contentType: application/json
+  bindings.messageProcessor-in-0:
+    destination: products
+    group: productsGroup
+
+spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
+  maxAttempts: 3
+  backOffInitialInterval: 500
+  backOffMaxInterval: 1000
+  backOffMultiplier: 2.0
+
+spring.cloud.stream.rabbit.bindings.messageProcessor-in-0.consumer:
+  autoBindDlq: true
+  republishToDlq: true
+
+spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer:
+  enableDlq: true
+
+spring.cloud.stream.kafka.binder:
+  brokers: 127.0.0.1
+  defaultBrokerPort: 9092
+
+spring.rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  username: guest
+  password: guest
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
 ---
 spring.config.activate.on-profile: docker
+
+spring.rabbitmq.host: rabbitmq
+
+spring.cloud.stream.kafka.binder.brokers: kafka
 
 server.port: 8080
 

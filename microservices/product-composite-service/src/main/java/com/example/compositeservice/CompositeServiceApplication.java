@@ -12,10 +12,9 @@ public class CompositeServiceApplication {
   public static void main(String[] args) {
     SpringApplication.run(CompositeServiceApplication.class, args);
   }
+
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();
   }
-
-
-  }
+}

@@ -18,6 +18,7 @@ repositories {
 ext {
     openapiVersion = "2.0.2"
     mapstructVersion = "1.5.3.Final"
+    springCloudVersion = "2022.0.1"
 }
 
 jar {
@@ -28,13 +29,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+    implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
+
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${openapiVersion}"
 
     implementation project(':api')
     implementation project(':util')
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
     testImplementation 'io.projectreactor:reactor-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {

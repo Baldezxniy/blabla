@@ -43,6 +43,7 @@ public class MessageProcessorConfig {
           throw new EventProcessingException(errorMessage);
         }
       }
+      LOG.info("Message processing done!");
     };
   }
 }

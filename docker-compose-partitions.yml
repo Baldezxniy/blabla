@@ -7,7 +7,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
     depends_on:
-      mongodb:
+      postgres-product-db:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -18,7 +18,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
     depends_on:
-      mongodb:
+      postgres-product-db:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -29,7 +29,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
     depends_on:
-      mongodb:
+      postgres-recommendation-db:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
     depends_on:
-      mongodb:
+      postgres-recommendation-db:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -51,7 +51,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
     depends_on:
-      mysql:
+      postgres-review-db:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -62,7 +62,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
     depends_on:
-      mysql:
+      postgres-review-db:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -78,30 +78,48 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  mongodb:
-    image: mongo:6.0.4
+  postgres-product-db:
+    image: postgres
     mem_limit: 512m
     ports:
-      - "27017:27017"
-    command: mongod
+      - "15432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=product-db
     healthcheck:
-      test: "mongostat -n 1"
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 2s
       retries: 60
 
-  mysql:
-    image: mysql:8.0.32
+  postgres-recommendation-db:
+    image: postgres
     mem_limit: 512m
     ports:
-      - "3306:3306"
+      - "5433:5432"
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpwd
-      - MYSQL_DATABASE=review-db
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=pwd
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=recommendation-db
+
     healthcheck:
-      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 2s
+      retries: 60
+
+  postgres-review-db:
+    image: postgres
+    mem_limit: 512m
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=review-db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 2s
       retries: 60
@@ -110,10 +128,10 @@ services:
     image: rabbitmq:3.11.8-management
     mem_limit: 512m
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
+      test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 5s
       timeout: 2s
       retries: 60

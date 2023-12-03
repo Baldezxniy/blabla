@@ -18,7 +18,7 @@ public class Event<K, V> {
   private final V data;
   private final ZonedDateTime eventCreatedAt;
 
-  public Event() {
+  public Event(Type create) {
     this.eventType = null;
     this.key = null;
     this.data = null;

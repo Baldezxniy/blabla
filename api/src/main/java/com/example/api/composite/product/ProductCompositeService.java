@@ -20,7 +20,8 @@ public interface ProductCompositeService {
           @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
           @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")
   })
-  @PostMapping(value = "/", consumes = "application/json")
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  @PostMapping(consumes = "application/json")
   Mono<Void> createProduct(@RequestBody ProductAggregate body);
 
   @Operation(

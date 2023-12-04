@@ -11,18 +11,100 @@ logging:
 
 spring:
   liquibase:
-    enabled: true
-  datasource:
-    url: "jdbc:postgresql://localhost:5432/product-db"
-    username: "postgres"
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:postgresql://localhost:5432/product-db
+    user: "postgres"
     password: "password"
-    hikari.initializationFailTimeout: 60000
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/product-db
+    username: postgres
+    password: password
+    name: product-db
+    pool:
+      max-create-connection-time: 60000
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+# Spring Cloud SetUp
+spring.cloud.function.definition: messageProcessor
+
+spring.cloud.stream:
+  defaultBinder: rabbit
+  default.contentType: application/json
+  bindings.messageProcessor-in-0:
+    destination: products
+    group: productsGroup
+
+spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
+  maxAttempts: 3
+  backOffInitialInterval: 500
+  backOffMaxInterval: 1000
+  backOffMultiplier: 2.0
+
+spring.cloud.stream.rabbit.bindings.messageProcessor-in-0.consumer:
+  autoBindDlq: true
+  republishToDlq: true
+
+spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer:
+  enableDlq: true
+
+spring.cloud.stream.kafka.binder:
+  brokers: 127.0.0.1
+  defaultBrokerPort: 9092
+
+spring.rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  username: guest
+  password: guest
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
 ---
 spring.config.activate.on-profile: docker
 
 server.port: 8080
 
-spring.datasource:
-  url: jdbc:postgresql://postgres-product-db/product-db
+spring:
+  liquibase:
+    password: password
+    user: postgres
+    url: jdbc:postgresql://postgres-product-db/product-db
+    enabled: true
+  r2dbc:
+    url: r2dbc:postgresql://postgres-product-db/product-db
+    username: postgres
+    password: password
+    name: product-db
+
+
+spring.rabbitmq.host: rabbitmq
+
+spring.cloud.stream.kafka.binder.brokers: kafka
+
+---
+spring.config.activate.on-profile: streaming_partitioned
+
+spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
+  partitioned: true
+  instanceCount: 2
+
+---
+spring.config.activate.on-profile: streaming_instance_0
+
+spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
+  instanceIndex: 0
+
+---
+spring.config.activate.on-profile: streaming_instance_1
+
+spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
+  instanceIndex: 1
+
+---
+spring.config.activate.on-profile: kafka
+
+management.health.rabbit.enabled: false
+spring.cloud.stream.defaultBinder: kafka
+spring.kafka.bootstrap-servers: kafka:9092
+spring.cloud.stream.kafka.binder.replication-factor: 1

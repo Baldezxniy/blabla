@@ -1,10 +1,14 @@
 package com.example.productservice.persistence;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
+public interface ProductRepository extends ReactiveCrudRepository<ProductEntity, Long> {
+  Mono<ProductEntity> findByProductId(int productId);
 
-public interface ProductRepository extends PagingAndSortingRepository<ProductEntity, Long>, CrudRepository<ProductEntity, Long> {
-  Optional<ProductEntity> findByProductId(int productId);
+  @Modifying
+  @Query("DELETE FROM products")
+  Mono<Void> deleteAll();
 }

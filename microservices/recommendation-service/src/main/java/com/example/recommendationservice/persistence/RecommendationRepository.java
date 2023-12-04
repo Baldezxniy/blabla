@@ -1,10 +1,10 @@
 package com.example.recommendationservice.persistence;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface RecommendationRepository extends CrudRepository<RecommendationEntity, Long> {
-  List<RecommendationEntity> findAllByProductId(int productId);
+public interface RecommendationRepository extends ReactiveCrudRepository<RecommendationEntity, Long> {
+  Flux<RecommendationEntity> findAllByProductId(int productId);
 }

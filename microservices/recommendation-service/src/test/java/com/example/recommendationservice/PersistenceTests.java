@@ -5,11 +5,14 @@ import com.example.recommendationservice.persistence.RecommendationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -18,7 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
-@DataJpaTest
+@DataR2dbcTest
 @Transactional(propagation = NOT_SUPPORTED)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PersistenceTests extends PostgreSQLTestBase {
@@ -29,89 +32,91 @@ public class PersistenceTests extends PostgreSQLTestBase {
 
   @BeforeEach
   void setupDb() {
-    repository.deleteAll();
+    StepVerifier.create(repository.deleteAll()).verifyComplete();
 
     RecommendationEntity entity = new RecommendationEntity(1, 2, "a", 3, "c");
-    savedEntity = repository.save(entity);
-
-    assertEqualsRecommendation(entity, savedEntity);
+    StepVerifier.create(repository.save(entity)).expectNextMatches(createdEntity -> {
+      savedEntity = createdEntity;
+      return areProductEqual(entity, savedEntity);
+    }).verifyComplete();
   }
+
 
   @Test
   void create() {
-
     RecommendationEntity newEntity = new RecommendationEntity(1, 3, "a", 3, "c");
-    repository.save(newEntity);
 
-    RecommendationEntity foundEntity = repository.findById(newEntity.getId()).get();
-    assertEqualsRecommendation(newEntity, foundEntity);
+    StepVerifier.create(repository.save(newEntity)).expectNextMatches(createdEntity -> newEntity.getProductId() == createdEntity.getProductId()).verifyComplete();
 
-    assertEquals(2, repository.count());
+    StepVerifier.create(repository.findById(newEntity.getId())).expectNextMatches(foundEntity -> areProductEqual(newEntity, foundEntity)).verifyComplete();
+
+    StepVerifier.create(repository.count()).expectNext(2L).verifyComplete();
   }
 
   @Test
   void update() {
-    savedEntity.setAuthor("a2");
-    repository.save(savedEntity);
 
-    RecommendationEntity foundEntity = repository.findById(savedEntity.getId()).get();
-    assertEquals(1, (long)foundEntity.getVersion());
-    assertEquals("a2", foundEntity.getAuthor());
+    // Version 1 -> 2
+    savedEntity.setAuthor("a2");
+    StepVerifier.create(repository.save(savedEntity)).expectNextMatches(updatedEntity -> updatedEntity.getAuthor().equals("a2")).verifyComplete();
+
+    StepVerifier.create(repository.findById(savedEntity.getId())).expectNextMatches(foundEntity -> foundEntity.getVersion() == 2 && foundEntity.getAuthor().equals("a2")).verifyComplete();
+
+    // Version 2 -> 3
+    savedEntity.setAuthor("a3");
+    StepVerifier.create(repository.save(savedEntity)).expectNextMatches(updatedEntity -> updatedEntity.getAuthor().equals("a3")).verifyComplete();
+
+    StepVerifier.create(repository.findById(savedEntity.getId())).expectNextMatches(foundEntity -> foundEntity.getVersion() == 3 && foundEntity.getAuthor().equals("a3")).verifyComplete();
   }
 
   @Test
   void delete() {
-    repository.delete(savedEntity);
-    assertFalse(repository.existsById(savedEntity.getId()));
+    StepVerifier.create(repository.delete(savedEntity)).verifyComplete();
+    StepVerifier.create(repository.existsById(savedEntity.getId())).expectNext(false).verifyComplete();
   }
 
   @Test
   void getByProductId() {
-    List<RecommendationEntity> entityList = repository.findAllByProductId(savedEntity.getProductId());
-
-    assertThat(entityList, hasSize(1));
-    assertEqualsRecommendation(savedEntity, entityList.get(0));
+    StepVerifier.create(repository.findAllByProductId(savedEntity.getProductId())).expectNextMatches(actualEntity -> areProductEqual(savedEntity, actualEntity)).verifyComplete();
   }
 
   @Test
   void duplicateError() {
-    assertThrows(DataIntegrityViolationException.class, () -> {
-      RecommendationEntity entity = new RecommendationEntity(1, 2, "a", 3, "c");
-      repository.save(entity);
-    });
+    RecommendationEntity entity = new RecommendationEntity(1, 2, "a", 3, "c");
+
+    StepVerifier.create(repository.save(entity)).expectError(DataIntegrityViolationException.class).verify();
   }
 
   @Test
   void optimisticLockError() {
 
     // Store the saved entity in two separate entity objects
-    RecommendationEntity entity1 = repository.findById(savedEntity.getId()).get();
-    RecommendationEntity entity2 = repository.findById(savedEntity.getId()).get();
+    RecommendationEntity entity1 = repository.findById(savedEntity.getId()).block();
+    RecommendationEntity entity2 = repository.findById(savedEntity.getId()).block();
 
     // Update the entity using the first entity object
     entity1.setAuthor("a1");
-    repository.save(entity1);
+    repository.save(entity1).block();
 
     //  Update the entity using the second entity object.
     // This should fail since the second entity now holds an old version number, i.e. an Optimistic Lock Error
-    assertThrows(OptimisticLockingFailureException.class, () -> {
-      entity2.setAuthor("a2");
-      repository.save(entity2);
-    });
+    StepVerifier.create(repository.save(entity2)).expectError(OptimisticLockingFailureException.class).verify();
 
     // Get the updated entity from the database and verify its new sate
-    RecommendationEntity updatedEntity = repository.findById(savedEntity.getId()).get();
-    assertEquals(1, (int)updatedEntity.getVersion());
-    assertEquals("a1", updatedEntity.getAuthor());
+    StepVerifier.create(repository.findById(entity1.getId())).expectNextMatches(foundEntity -> foundEntity.getVersion() == 2 && foundEntity.getAuthor().equals("a1")).verifyComplete();
   }
 
   private void assertEqualsRecommendation(RecommendationEntity expectedEntity, RecommendationEntity actualEntity) {
-    assertEquals(expectedEntity.getId(),               actualEntity.getId());
-    assertEquals(expectedEntity.getVersion(),          actualEntity.getVersion());
-    assertEquals(expectedEntity.getProductId(),        actualEntity.getProductId());
+    assertEquals(expectedEntity.getId(), actualEntity.getId());
+    assertEquals(expectedEntity.getVersion(), actualEntity.getVersion());
+    assertEquals(expectedEntity.getProductId(), actualEntity.getProductId());
     assertEquals(expectedEntity.getRecommendationId(), actualEntity.getRecommendationId());
-    assertEquals(expectedEntity.getAuthor(),           actualEntity.getAuthor());
-    assertEquals(expectedEntity.getRating(),           actualEntity.getRating());
-    assertEquals(expectedEntity.getContent(),          actualEntity.getContent());
+    assertEquals(expectedEntity.getAuthor(), actualEntity.getAuthor());
+    assertEquals(expectedEntity.getRating(), actualEntity.getRating());
+    assertEquals(expectedEntity.getContent(), actualEntity.getContent());
+  }
+
+  private boolean areProductEqual(RecommendationEntity expectedEntity, RecommendationEntity actualEntity) {
+    return (expectedEntity.getId().equals(actualEntity.getId())) && (expectedEntity.getProductId() == actualEntity.getProductId()) && (expectedEntity.getRecommendationId() == actualEntity.getRecommendationId()) && (expectedEntity.getAuthor().equals(actualEntity.getAuthor())) && (expectedEntity.getRating() == actualEntity.getRating()) && (expectedEntity.getContent().equals(actualEntity.getContent()));
   }
 }

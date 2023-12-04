@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.net.InetAddress;
@@ -20,7 +21,7 @@ public class ProductServiceApplication {
   public static void main(String[] args) {
     ConfigurableApplicationContext ctx = SpringApplication.run(ProductServiceApplication.class, args);
 
-    String postgresHost = ctx.getEnvironment().getProperty("spring.datasource.url");
+    String postgresHost = ctx.getEnvironment().getProperty("spring.r2dbc.url");
     LOG.info("Connected to PostgreSQL: " + postgresHost);
   }
 }

@@ -1,16 +1,38 @@
-Бла бла бла бла бла, бла бла, а если честно то суть в бла бла бла бла, потом перепишу объяснения. бла бла
+<h1 align="center">Hi there, I'm <a href="#" target="_blank">xedlab</a> 
+<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1>
+<h3 align="center">This is a project during which I am learning Spring with Microservices</h3>
 
-Для локальной разработки, понадобиться создать 3 БД на дефолтном 5432 порту:
-1. product-db
-2. recommendation-db
-3. review-db
-Имена и Пароли 
-username: "postgres"
-password: "password"
 
-При деплое в докере, в корневой папке проекта ввести команды ниже, докер должен быть запущен:
+blabla
+===========
+___
 
-1. .\gradlew build -x test
-2. docker-compose up --build
+***Blabla - this project helped me improve my knowledge about spring boot and microservices***
 
-При тестировании любого сервиса, кроме productcomposite также докер должен быть запущен так как используется testcontainer, для удобства вы можете установить свою версию postgres в проекте, используется latest. В будущем мб, добавлю локальную переменную для версии бд, и мб добавлю миграцию бд, мб это будет liquibase, так как это простенько, чтобы не была проблем с хибернейтом  
+> ### Modules
+> > 1. Api <br>
+> > Declaration of Rest services and Api models
+> > 2. Utils <br>
+> >  Declaration of Rest Handler Exception services and helpers method
+> > 3. Microservices <br>
+> >  Main Rest Service
+
+> ### For local development
+> > Using pgAdmin you need to create three databases
+> > 1. product-db
+> > 2. recommendation-db
+> > 3. review-db
+> > ##### Username & password:
+> > > username: "postgres"
+> > > password: "password"
+___
+
+> ### For Docker deployment
+> > Using different Docker-compose files
+> > 1. <span style="font-size:15px;">docker-compose.yml<br> </span>
+> > <span style="font-size:13px;">Deploying an application using RabbitMQ as a broker.</span>
+> > 2. <span style="font-size:15px;">docker-compose.yml<br></span>
+> > <span style="font-size:13px;">Deploying an application with additional containers using RabbitMQ as a broker with a double splitter feature.</span>
+> > 3. <span style="font-size:15px;">docker-compose-kafka.yml<br></span>
+> > <span style="font-size:13px;">Deploying an application with additional containers using Kafka as a broker with a double splitter feature.</span>
+ 

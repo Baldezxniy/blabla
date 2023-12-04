@@ -1,6 +1,7 @@
 package com.example.api.core.product;
 
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RequestMapping("/v1/product")
 public interface ProductService {
@@ -16,7 +17,7 @@ public interface ProductService {
    * @return A JSON representation of the newly created product
    */
   @PostMapping(produces = "application/json", consumes = "application/json")
-  Product createProduct(@RequestBody Product body);
+  Mono<Product> createProduct(@RequestBody Product body);
 
   /**
    * Sample usage: "curl $HOST:$PORT/v1/product/1".
@@ -25,7 +26,7 @@ public interface ProductService {
    * @return if product, if found else null
    */
   @GetMapping(value = "/{productId}", produces = "application/json")
-  Product getProduct(@PathVariable("productId") int productId);
+  Mono<Product> getProduct(@PathVariable("productId") int productId);
 
   /**
    * Sample usage, see "curl -X DELETE $HOST:$PORT/v1/product/1"
@@ -33,5 +34,5 @@ public interface ProductService {
    * @param productId Id of the product
    */
   @DeleteMapping("/{productId}")
-  void deleteProduct(@PathVariable("productId") int productId);
+  Mono<Void> deleteProduct(@PathVariable("productId") int productId);
 }

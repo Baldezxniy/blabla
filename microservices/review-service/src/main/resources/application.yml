@@ -75,6 +75,7 @@ spring:
     url: jdbc:postgresql://postgres-review-db/review-db
     username: postgres
     password: password
+    name: review-db
 
 spring.rabbitmq.host: rabbitmq
 

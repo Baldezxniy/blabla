@@ -15,7 +15,7 @@ public class RecommendationServiceApplication {
   public static void main(String[] args) {
     ConfigurableApplicationContext ctx = SpringApplication.run(RecommendationServiceApplication.class, args);
 
-    String postgresHost = ctx.getEnvironment().getProperty("spring.datasource.url");
+    String postgresHost = ctx.getEnvironment().getProperty("spring.r2dbc.url");
     LOG.info("Connected to PostgreSQL: " + postgresHost);
   }
 }

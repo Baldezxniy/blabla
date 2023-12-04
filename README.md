@@ -30,11 +30,9 @@ ___
 > ### For Docker deployment
 > > Using different Docker-compose files
 > > 1. <span style="font-size:15px;">docker-compose.yml<br> </span>
-       > > <span style="font-size:13px;">Deploying an application using RabbitMQ as a broker.</span>
+> > <span style="font-size:13px;">Deploying an application using RabbitMQ as a broker.</span>
 > > 2. <span style="font-size:15px;">docker-compose.yml<br></span>
-       > > <span style="font-size:13px;">Deploying an application with additional containers using RabbitMQ as a broker
-       with a double splitter feature.</span>
+> > <span style="font-size:13px;">Deploying an application with additional containers using RabbitMQ as a broker with a double splitter feature.</span>
 > > 3. <span style="font-size:15px;">docker-compose-kafka.yml<br></span>
-       > > <span style="font-size:13px;">Deploying an application with additional containers using Kafka as a broker
-       with a double splitter feature.</span>
+> > <span style="font-size:13px;">Deploying an application with additional containers using Kafka as a broker with a double splitter feature.</span>
  

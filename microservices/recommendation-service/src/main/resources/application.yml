@@ -12,12 +12,12 @@ logging:
 spring:
   liquibase:
     enabled: true
-    url: jdbc:postgresql://localhost:5432/recommendation-db
+    url: jdbc:postgresql://localhost:5433/recommendation-db
     password: password
     user: postgres
     change-log: classpath:db/changelog/db.changelog-master.yaml
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/recommendation-db
+    url: r2dbc:postgresql://localhost:5433/recommendation-db
     username: postgres
     password: password
     pool:

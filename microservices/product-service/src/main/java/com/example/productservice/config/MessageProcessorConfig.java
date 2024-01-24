@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.function.Consumer;
 
-
 @Configuration
 class MessageProcessorConfig {
   private static final Logger LOG = LoggerFactory.getLogger(MessageProcessorConfig.class);
@@ -39,7 +38,10 @@ class MessageProcessorConfig {
           productService.deleteProduct(productId).block();
         }
         default -> {
-          String errorMessage = "Incorrect event type: " + event.getEventType() + ", expected a CREATE or DELETE event";
+          String errorMessage =
+              "Incorrect event type: "
+                  + event.getEventType()
+                  + ", expected a CREATE or DELETE event";
           LOG.warn(errorMessage);
           throw new EventProcessingException(errorMessage);
         }

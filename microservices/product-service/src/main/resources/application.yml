@@ -10,15 +10,18 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   liquibase:
+    enabled: true
+    url: jdbc:postgresql://${PRODUCT_POSTGRES_HOST_AND_PORT}/product-db
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     change-log: classpath:db/changelog/db.changelog-master.yaml
-    url: jdbc:postgresql://localhost:15432/product-db
-    user: "postgres"
-    password: "password"
   r2dbc:
-    url: r2dbc:postgresql://localhost:15432/product-db
-    username: postgres
-    password: password
+    url: r2dbc:postgresql://${PRODUCT_POSTGRES_HOST_AND_PORT}/product-db
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     name: product-db
     pool:
       max-create-connection-time: 60000
@@ -49,14 +52,14 @@ spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer:
   enableDlq: true
 
 spring.cloud.stream.kafka.binder:
-  brokers: 127.0.0.1
-  defaultBrokerPort: 9092
+  brokers: ${KAFKA_HOST}
+  defaultBrokerPort: ${KAFKA_PORT}к
 
 spring.rabbitmq:
-  host: 127.0.0.1
-  port: 5672
-  username: guest
-  password: guest
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+  username: ${RABBITMQ_USERNAME}
+  password: ${RABBITMQ_PASSWORD}
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
@@ -73,8 +76,8 @@ spring:
     enabled: true
   r2dbc:
     url: r2dbc:postgresql://postgres-product-db/product-db
-    username: postgres
-    password: password
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     name: product-db
 
 
@@ -106,5 +109,5 @@ spring.config.activate.on-profile: kafka
 
 management.health.rabbit.enabled: false
 spring.cloud.stream.defaultBinder: kafka
-spring.kafka.bootstrap-servers: kafka:9092
+spring.kafka.bootstrap-servers: ${KAFKA_SERVER_BOOTSTRAP}
 spring.cloud.stream.kafka.binder.replication-factor: 1

@@ -1,6 +1,8 @@
 server.port: 7001
 server.error.include-message: always
 
+spring.application.name: product
+
 spring.jpa.hibernate.ddl-auto: none
 
 logging:
@@ -8,6 +10,18 @@ logging:
     root: INFO
     com.example: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+app.eureka-server: localhost
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
 
 spring:
   config:
@@ -53,7 +67,7 @@ spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer:
 
 spring.cloud.stream.kafka.binder:
   brokers: ${KAFKA_HOST}
-  defaultBrokerPort: ${KAFKA_PORT}к
+  defaultBrokerPort: ${KAFKA_PORT}
 
 spring.rabbitmq:
   host: ${RABBITMQ_HOST}
@@ -67,6 +81,8 @@ management.endpoints.web.exposure.include: "*"
 spring.config.activate.on-profile: docker
 
 server.port: 8080
+
+app.eureka-server: eureka
 
 spring:
   liquibase:

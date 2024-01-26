@@ -12,11 +12,11 @@ logging:
 spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
-    url: jdbc:postgresql://localhost:5432/product-db
+    url: jdbc:postgresql://localhost:15432/product-db
     user: "postgres"
     password: "password"
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/product-db
+    url: r2dbc:postgresql://localhost:15432/product-db
     username: postgres
     password: password
     name: product-db

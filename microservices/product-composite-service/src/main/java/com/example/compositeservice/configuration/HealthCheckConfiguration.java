@@ -1,7 +1,6 @@
 package com.example.compositeservice.configuration;
 
 import com.example.compositeservice.service.ProductCompositeIntegrationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.CompositeReactiveHealthContributor;
 import org.springframework.boot.actuate.health.ReactiveHealthContributor;
 import org.springframework.boot.actuate.health.ReactiveHealthIndicator;
@@ -13,18 +12,21 @@ import java.util.Map;
 
 @Configuration
 public class HealthCheckConfiguration {
-  @Autowired
-  ProductCompositeIntegrationService integration;
 
-  @Bean
-  ReactiveHealthContributor coreService() {
-    final Map<String, ReactiveHealthIndicator> registry = new LinkedHashMap<>();
+	private final ProductCompositeIntegrationService integration;
 
-    registry.put("product", () -> integration.getProductHealth());
-    registry.put("recommendation", () -> integration.
-            getRecommendationHealth());
-    registry.put("review", () -> integration.getReviewHealth());
+	public HealthCheckConfiguration(ProductCompositeIntegrationService integration) {
+		this.integration = integration;
+	}
 
-    return CompositeReactiveHealthContributor.fromMap(registry);
-  }
+	@Bean
+	ReactiveHealthContributor coreService() {
+		final Map<String, ReactiveHealthIndicator> registry = new LinkedHashMap<>();
+
+		registry.put("product", integration::getProductHealth);
+		registry.put("recommendation", integration::getRecommendationHealth);
+		registry.put("review", integration::getReviewHealth);
+
+		return CompositeReactiveHealthContributor.fromMap(registry);
+	}
 }

@@ -8,10 +8,9 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "products")
 public class ProductEntity {
-  @Id
-  private Long id;
-  @Version()
-  private int version;
+  @Id private Long id;
+  @Version() private int version;
+
   @Column("product_id")
   @Nullable
   private int productId;
@@ -19,8 +18,7 @@ public class ProductEntity {
   private String name;
   private int weight;
 
-  public ProductEntity() {
-  }
+  public ProductEntity() {}
 
   public ProductEntity(int productId, String name, int weight) {
     this.productId = productId;
@@ -35,7 +33,6 @@ public class ProductEntity {
   public void setId(long id) {
     this.id = id;
   }
-
 
   public int getVersion() {
     return version;

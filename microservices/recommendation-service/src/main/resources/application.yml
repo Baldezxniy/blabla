@@ -10,16 +10,18 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   liquibase:
     enabled: true
-    url: jdbc:postgresql://localhost:5433/recommendation-db
-    password: password
-    user: postgres
+    url: jdbc:postgresql://${RECOMMENDATION_POSTGRES_HOST_AND_PORT}/recommendation-db
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     change-log: classpath:db/changelog/db.changelog-master.yaml
   r2dbc:
-    url: r2dbc:postgresql://localhost:5433/recommendation-db
-    username: postgres
-    password: password
+    url: r2dbc:postgresql://${RECOMMENDATION_POSTGRES_HOST_AND_PORT}/recommendation-db
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     pool:
       max-create-connection-time: 60000
   jpa:
@@ -32,8 +34,8 @@ spring.cloud.stream:
   defaultBinder: rabbit
   default.contentType: application/json
   bindings.messageProcessor-in-0:
-    destination: products
-    group: productsGroup
+    destination: recommendations
+    group: recommendationsGroup
 
 spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
   maxAttempts: 3
@@ -49,14 +51,14 @@ spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer:
   enableDlq: true
 
 spring.cloud.stream.kafka.binder:
-  brokers: 127.0.0.1
-  defaultBrokerPort: 9092
+  brokers: ${KAFKA_HOST}
+  defaultBrokerPort: ${KAFKA_PORT}
 
 spring.rabbitmq:
-  host: 127.0.0.1
-  port: 5672
-  username: guest
-  password: guest
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+  username: ${RABBITMQ_USERNAME}
+  password: ${RABBITMQ_PASSWORD}
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
@@ -68,14 +70,14 @@ server.port: 8080
 
 spring:
   liquibase:
-    password: password
-    user: postgres
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://postgres-recommendation-db/recommendation-db
     enabled: true
   r2dbc:
     url: r2dbc:postgresql://postgres-recommendation-db/recommendation-db
-    username: postgres
-    password: password
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
 
 spring.rabbitmq.host: rabbitmq
 
@@ -105,5 +107,5 @@ spring.config.activate.on-profile: kafka
 
 management.health.rabbit.enabled: false
 spring.cloud.stream.defaultBinder: kafka
-spring.kafka.bootstrap-servers: kafka:9092
+spring.kafka.bootstrap-servers: ${KAFKA_SERVER_BOOTSTRAP}
 spring.cloud.stream.kafka.binder.replication-factor: 1

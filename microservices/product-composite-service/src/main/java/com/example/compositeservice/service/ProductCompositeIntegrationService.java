@@ -109,6 +109,7 @@ public class ProductCompositeIntegrationService
   @Override
   public Mono<Recommendation> createRecommendation(Recommendation body) {
 
+    System.out.println("RECOMMENDATION: " +body.getAuthor());
     return Mono.fromCallable(
             () -> {
               sendMessage("recommendations-out-0", new Event<>(CREATE, body.getProductId(), body));

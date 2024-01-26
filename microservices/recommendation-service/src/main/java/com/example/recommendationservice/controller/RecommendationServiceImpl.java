@@ -1,5 +1,7 @@
 package com.example.recommendationservice.controller;
 
+import static java.util.logging.Level.FINE;
+
 import com.example.api.core.recommendation.Recommendation;
 import com.example.api.core.recommendation.RecommendationService;
 import com.example.api.exceptions.InvalidInputException;
@@ -15,12 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
-import static java.util.logging.Level.FINE;
-
 @RestController
 public class RecommendationServiceImpl implements RecommendationService {
   private static final Logger LOG = LoggerFactory.getLogger(RecommendationServiceImpl.class);
@@ -29,7 +25,10 @@ public class RecommendationServiceImpl implements RecommendationService {
   private final RecommendationMapper mapper;
   private final ServiceUtil serviceUtil;
 
-  public RecommendationServiceImpl(RecommendationRepository repository, @Qualifier("recommendationMapperImpl") RecommendationMapper mapper, ServiceUtil serviceUtil) {
+  public RecommendationServiceImpl(
+      RecommendationRepository repository,
+      @Qualifier("recommendationMapperImpl") RecommendationMapper mapper,
+      ServiceUtil serviceUtil) {
     this.repository = repository;
     this.mapper = mapper;
     this.serviceUtil = serviceUtil;
@@ -42,11 +41,19 @@ public class RecommendationServiceImpl implements RecommendationService {
       throw new InvalidInputException("Invalid productId: " + body.getProductId());
 
     RecommendationEntity entity = mapper.apiToEntity(body);
-    Mono<Recommendation> newEntity = repository.save(entity)
+    Mono<Recommendation> newEntity =
+        repository
+            .save(entity)
             .log(LOG.getName(), FINE)
-            .onErrorMap(DataIntegrityViolationException.class,
-                    ex -> new InvalidInputException("Duplicate key, Product Id: " + body.getProductId() + ", Recommendation Id:" + body.getRecommendationId())
-            ).map(e -> mapper.entityToApi(e));
+            .onErrorMap(
+                DataIntegrityViolationException.class,
+                ex ->
+              	      new InvalidInputException(
+                        "Duplicate key, Product Id: "
+                            + body.getProductId()
+                            + ", Recommendation Id:"
+                            + body.getRecommendationId()))
+            .map(e -> mapper.entityToApi(e));
 
     return newEntity;
   }
@@ -60,10 +67,11 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     LOG.info("Will get recommendations for product with id={}", productId);
 
-    return repository.findAllByProductId(productId)
-            .log(LOG.getName(), FINE)
-            .map(entity -> mapper.entityToApi(entity))
-            .map(api -> setServiceAddress(api));
+    return repository
+        .findAllByProductId(productId)
+        .log(LOG.getName(), FINE)
+        .map(entity -> mapper.entityToApi(entity))
+        .map(api -> setServiceAddress(api));
   }
 
   @Override
@@ -73,7 +81,9 @@ public class RecommendationServiceImpl implements RecommendationService {
       throw new InvalidInputException("Invalid productId: " + productId);
     }
 
-    LOG.debug("deleteRecommendations: tries to delete recommendations for the product with productId: {}", productId);
+    LOG.debug(
+        "deleteRecommendations: tries to delete recommendations for the product with productId: {}",
+        productId);
     return repository.deleteAll(repository.findAllByProductId(productId));
   }
 

@@ -7,22 +7,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.client.RestTemplate;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 @SpringBootApplication
 @ComponentScan("com.example")
 public class ProductCompositeServiceApplication {
-  private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeServiceApplication.class);
+  private static final Logger LOG =
+      LoggerFactory.getLogger(ProductCompositeServiceApplication.class);
 
   private final int threadPoolSize;
   private final int taskQueueSize;
 
   public ProductCompositeServiceApplication(
-          @Value("${app.threadPoolSize:10}") Integer threadPoolSize,
-          @Value("${app.taskQueueSize:100}") Integer taskQueueSize
-  ) {
+      @Value("${app.threadPoolSize:10}") Integer threadPoolSize,
+      @Value("${app.taskQueueSize:100}") Integer taskQueueSize) {
     this.threadPoolSize = threadPoolSize;
     this.taskQueueSize = taskQueueSize;
   }

@@ -24,7 +24,7 @@ import reactor.test.StepVerifier;
 
 import java.util.function.Consumer;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"eureka.client.enabled=false"})
 class RecommendationServiceApplicationTests extends PostgreSQLTestBase {
   @Autowired
   private WebTestClient client;

@@ -24,12 +24,20 @@ public class MessageProcessorConfig {
   @Bean
   public Consumer<Event<Integer, Recommendation>> messageProcessor() {
     return event -> {
-      LOG.info("Processor message created at {}...", event.getEventCreatedAt());
+
+		Recommendation recommendation1 = event.getData();
+		System.out.println("RECOMMENDATION: " + recommendation1.getAuthor());
+
+		LOG.info("Processor message created at {}...", event.getEventCreatedAt());
 
       switch (event.getEventType()) {
         case CREATE -> {
           Recommendation recommendation = event.getData();
-          LOG.info("Create recommendation with ID: {}/{}", recommendation.getProductId(), recommendation.getRecommendationId());
+          System.out.println("RECOMMENDATION: " + recommendation.getAuthor());
+          LOG.info(
+              "Create recommendation with ID: {}/{}",
+              recommendation.getProductId(),
+              recommendation.getRecommendationId());
           recommendationService.createRecommendation(recommendation).block();
         }
         case DELETE -> {
@@ -38,7 +46,10 @@ public class MessageProcessorConfig {
           recommendationService.deleteRecommendations(productId).block();
         }
         default -> {
-          String errorMessage = "Incorrect event type: " + event.getEventType() + ", expected a CREATE or DELETE event";
+          String errorMessage =
+              "Incorrect event type: "
+                  + event.getEventType()
+                  + ", expected a CREATE or DELETE event";
           LOG.warn(errorMessage);
           throw new EventProcessingException(errorMessage);
         }

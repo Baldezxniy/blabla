@@ -12,6 +12,7 @@ import com.example.api.event.Event;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+
 public class IsSameEventTests {
 
   ObjectMapper mapper = new ObjectMapper();

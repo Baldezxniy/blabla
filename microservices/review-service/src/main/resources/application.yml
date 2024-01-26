@@ -11,16 +11,18 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   liquibase:
     enabled: true
-    url: jdbc:postgresql://localhost:5432/review-db
-    password: password
-    user: postgres
+    url: jdbc:postgresql://${REVIEW_POSTGRES_HOST_AND_PORT}/review-db
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     change-log: classpath:db/changelog/db.changelog-master.yaml
   datasource:
-    url: jdbc:postgresql://localhost:5432/review-db
-    username: "postgres"
-    password: "password"
+    url: jdbc:postgresql://${REVIEW_POSTGRES_HOST_AND_PORT}/review-db
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     hikari.initializationFailTimeout: 60000
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -42,6 +44,7 @@ spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
   backOffMultiplier: 2.0
 
 spring.cloud.stream.rabbit.bindings.messageProcessor-in-0.consumer:
+
   autoBindDlq: true
   republishToDlq: true
 
@@ -49,14 +52,15 @@ spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer:
   enableDlq: true
 
 spring.cloud.stream.kafka.binder:
-  brokers: 127.0.0.1
-  defaultBrokerPort: 9092
+  brokers: ${KAFKA_HOST}
+  defaultBrokerPort: ${KAFKA_PORT}
 
 spring.rabbitmq:
-  host: 127.0.0.1
-  port: 5672
-  username: guest
-  password: guest
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+  username: ${RABBITMQ_USERNAME}
+  password: ${RABBITMQ_PASSWORD}
+
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
@@ -67,14 +71,14 @@ server.port: 8080
 
 spring:
   liquibase:
-    password: password
-    user: postgres
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://postgres-review-db/review-db
     enabled: true
   datasource:
     url: jdbc:postgresql://postgres-review-db/review-db
-    username: postgres
-    password: password
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     name: review-db
 
 spring.rabbitmq.host: rabbitmq
@@ -105,5 +109,5 @@ spring.config.activate.on-profile: kafka
 
 management.health.rabbit.enabled: false
 spring.cloud.stream.defaultBinder: kafka
-spring.kafka.bootstrap-servers: kafka:9092
+spring.kafka.bootstrap-servers: ${KAFKA_SERVER_BOOTSTRAP}
 spring.cloud.stream.kafka.binder.replication-factor: 1

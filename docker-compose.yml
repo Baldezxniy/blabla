@@ -102,6 +102,9 @@ services:
       interval: 5s
       timeout: 2s
       retries: 60
-#networks:
-#  backend:
-#    driver: bridge
+
+  eureka:
+    build: spring-cloud/eureka-server
+    mem_limit: 512m
+    ports:
+      - "6761:6761"

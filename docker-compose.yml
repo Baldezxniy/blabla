@@ -107,4 +107,4 @@ services:
     build: spring-cloud/eureka-server
     mem_limit: 512m
     ports:
-      - "6761:6761"
+      - "8761:8761"

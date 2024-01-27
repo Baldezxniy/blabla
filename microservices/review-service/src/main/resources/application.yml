@@ -24,6 +24,8 @@ eureka:
 
 
 spring:
+  application:
+    name: review
   config:
     import: optional:file:.env[.properties]
   liquibase:

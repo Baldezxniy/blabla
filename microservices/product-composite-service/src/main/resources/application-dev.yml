@@ -1,0 +1,4 @@
+logging:
+  level:
+    root: ERROR
+    com.rabbitmq.client: TRACE

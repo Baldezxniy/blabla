@@ -8,6 +8,8 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -17,6 +19,8 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
     depends_on:
       postgres-product-db:
         condition: service_healthy
@@ -28,6 +32,8 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
     depends_on:
       postgres-recommendation-db:
         condition: service_healthy
@@ -39,6 +45,8 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    env_file:
+      - .env
     depends_on:
       postgres-review-db:
         condition: service_healthy
@@ -102,6 +110,9 @@ services:
       interval: 5s
       timeout: 2s
       retries: 60
-#networks:
-#  backend:
-#    driver: bridge
+
+  eureka:
+    build: spring-cloud/eureka-server
+    mem_limit: 512m
+    ports:
+      - "8761:8761"

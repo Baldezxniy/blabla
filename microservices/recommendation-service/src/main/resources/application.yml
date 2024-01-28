@@ -9,7 +9,21 @@ logging:
     com.example: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
+app.eureka-server: localhost
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+
 spring:
+  application:
+    name: recommendation
   config:
     import: optional:file:.env[.properties]
   liquibase:
@@ -26,6 +40,7 @@ spring:
       max-create-connection-time: 60000
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
 
 # Spring Cloud SetUp
 spring.cloud.function.definition: messageProcessor
@@ -65,6 +80,8 @@ management.endpoints.web.exposure.include: "*"
 
 ---
 spring.config.activate.on-profile: docker
+
+app.eureka-server: eureka
 
 server.port: 8080
 

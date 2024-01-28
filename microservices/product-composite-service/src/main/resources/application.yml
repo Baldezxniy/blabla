@@ -86,20 +86,24 @@ api:
         This means that a delete request of a non-existing product will
         return **200 Ok**.
 
-
 server.port: 7000
 server.error.include-message: always
 
-app:
-  product-service:
-    host: ${LOCAL_PRODUCT_HOST}
-    port: ${LOCAL_PRODUCT_PORT}
-  recommendation-service:
-    host: ${LOCAL_RECOMMENDATION_HOST}
-    port: ${LOCAL_RECOMMENDATION_PORT}
-  review-service:
-    host: ${LOCAL_REVIEW_HOST}
-    port: ${LOCAL_REVIEW_PORT}
+spring.application.name: product-composite
+
+app.eureka-server: localhost
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+    registerWithEureka: true
+    fetchRegistry: true
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
 
 spring.cloud.stream:
   defaultBinder: rabbit
@@ -132,16 +136,7 @@ spring.config.activate.on-profile: docker
 
 server.port: 8080
 
-app:
-  product-service:
-    host: product
-    port: 8080
-  recommendation-service:
-    host: recommendation
-    port: 8080
-  review-service:
-    host: review
-    port: 8080
+app.eureka-server: eureka
 
 spring.rabbitmq.host: rabbitmq
 

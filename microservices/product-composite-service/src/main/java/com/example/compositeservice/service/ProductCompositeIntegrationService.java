@@ -170,18 +170,6 @@ public class ProductCompositeIntegrationService
     streamBridge.send(bindingName, message);
   }
 
-  public Mono<Health> getProductHealth() {
-    return getHealth(PRODUCT_SERVICE_URL);
-  }
-
-  public Mono<Health> getRecommendationHealth() {
-    return getHealth(RECOMMENDATION_SERVICE_URL);
-  }
-
-  public Mono<Health> getReviewHealth() {
-    return getHealth(REVIEW_SERVICE_URL);
-  }
-
   private Mono<Health> getHealth(String url) {
 
     url += "/actuator/health";

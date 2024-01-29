@@ -8,6 +8,8 @@ springdoc:
   packagesToScan: com.example
   pathsToMatch: /**
 
+server.forward-headers-strategy: framework
+
 logging:
   level:
     root: INFO
